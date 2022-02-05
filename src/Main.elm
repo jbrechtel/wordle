@@ -3,10 +3,19 @@ import Browser
 import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
 import List exposing (map)
-main =
-  Browser.sandbox { init = Model 0 "" [], update = update, view = view }
 
-type alias Model = { total : Int 
+main : Program () Model Msg
+main =
+  Browser.sandbox { init = initialModel, update = update, view = view }
+
+initialModel : Model
+initialModel =
+  { total = 0
+  , name = ""
+  , list = []
+  }
+
+type alias Model = { total : Int
                    , name : String
                    , list : List String
                    }
@@ -16,16 +25,16 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     Increment i ->
-      Model (model.total + i) model.name model.list
+      { model | total = model.total + i }
 
     Decrement i ->
-      Model (model.total - i) model.name model.list
-    
+      { model | total = model.total - i }
+
     ChangeName newname->
-      Model (model.total) newname model.list
+      { model | name = newname }
 
     UpdateList ->
-      Model model.total model.name (model.name :: model.list)
+      { model | list = model.name :: model.list }
 
 view : Model -> Html Msg
 view model =
@@ -39,6 +48,6 @@ view model =
     , input [onInput ChangeName] []
     , button [onClick UpdateList] [text "Update"]
     ]
-viewname : String -> Html Msg 
+viewname : String -> Html Msg
 viewname name =
-  div [] [ text name ] 
+  div [] [ text name ]
